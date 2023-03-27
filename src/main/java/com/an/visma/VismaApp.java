@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -20,6 +21,7 @@ public class VismaApp {
     public VismaApp(String csvData) {
         transactions = Stream.of(csvData.split(System.lineSeparator()))
                 .map(line -> line.split(","))
+                .filter(row -> row.length == 6)
                 .map(row -> {
                     try {
                         return new Transaction(
@@ -30,7 +32,7 @@ public class VismaApp {
                                 Double.parseDouble(row[4]), // item price
                                 Integer.parseInt(row[5]) // item quantity
                         );
-                    } catch (ParseException e) {
+                    } catch (ParseException | NumberFormatException e) {
                         return null;
                     }
                 })
@@ -58,7 +60,7 @@ public class VismaApp {
         return customers.size();
     }
 
-    public String mostPopularItem() {
+    public Optional<String> mostPopularItem() {
         Map<String, Integer> itemCounts = new HashMap<>();
         for (Transaction t: transactions)
             if (itemCounts.containsKey(t.itemId()))
@@ -68,10 +70,12 @@ public class VismaApp {
         var sortedItemCounts = itemCounts.entrySet().stream()
                 .sorted(this::itemCountComparator)
                 .toList();
-        return sortedItemCounts.get(sortedItemCounts.size() - 1).getKey();
+         return (sortedItemCounts.isEmpty())
+                ? Optional.empty()
+                : Optional.of(sortedItemCounts.get(sortedItemCounts.size() - 1).getKey());
     }
 
-    public Date highestRevenueDate() {
+    public Optional<Date> highestRevenueDate() {
         Map<Date, Double> dateRevenues = new HashMap<>();
         for (Transaction t: transactions)
             if (dateRevenues.containsKey(t.date()))
@@ -81,7 +85,13 @@ public class VismaApp {
         var sortedDateRevenues = dateRevenues.entrySet().stream()
                 .sorted(this::dateRevenuesComparator)
                 .toList();
-        return sortedDateRevenues.get(sortedDateRevenues.size() - 1).getKey();
+        return (sortedDateRevenues.isEmpty())
+                ? Optional.empty()
+                : Optional.of(sortedDateRevenues.get(sortedDateRevenues.size() - 1).getKey());
+    }
+
+    public List<Transaction> transactions() {
+        return transactions;
     }
 }
 

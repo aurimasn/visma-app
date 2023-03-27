@@ -11,9 +11,9 @@ public class InitApplication {
 
         System.out.println("Total revenue: " + app.totalRevenue());
         System.out.println("Total unique customers: " + app.totalUniqueCustomers());
-        System.out.println("Most popular item: " + app.mostPopularItem());
+        System.out.println("Most popular item: " + app.mostPopularItem().get());
         System.out.println("Date with highest revenue: "
-                + new SimpleDateFormat(VismaApp.DATE_FORMAT).format(app.highestRevenueDate()));
+                + new SimpleDateFormat(VismaApp.DATE_FORMAT).format(app.highestRevenueDate().get()));
     }
 
 }
