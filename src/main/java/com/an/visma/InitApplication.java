@@ -23,7 +23,7 @@ public class InitApplication {
         System.out.println("Most popular item: " + app.mostPopularItem().orElse("N/A"));
         Optional<Date> dt = app.highestRevenueDate();
         if (dt.isPresent())
-                System.out.println("Date with highest revenue: " + new SimpleDateFormat(VismaApp.DATE_FORMAT).format(dt));
+                System.out.println("Date with highest revenue: " + new SimpleDateFormat(VismaApp.DATE_FORMAT).format(dt.get()));
             else
                 System.out.println("Date with highest revenue: N/A");
     }
